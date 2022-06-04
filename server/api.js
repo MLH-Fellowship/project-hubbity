@@ -4,13 +4,17 @@ dotenv.config();
 
 import express from 'express';
 
+import { login, register } from './auth';
+
 const app = express();
 
 const router = express.Router();
 
-router.get('/', (req, res) => res.send('Hi'));
+router.post('/login', login);
+router.post('/register', register);
 
-app.use('/api/*', router);
+app.use(express.json({ strict: true }));
+app.use('/api', router);
 
 export const api = router;
 export const handler = app;
