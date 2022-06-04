@@ -12,4 +12,5 @@ router.get('/', (req, res) => res.send('Hi'));
 
 app.use('/api/*', router);
 
+export const api = router;
 export const handler = app;
