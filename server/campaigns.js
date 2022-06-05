@@ -89,8 +89,6 @@ router
         return res.send("Campaign doesn't exist!");
       }
 
-      console.log(campaign.user_id, userID);
-
       if (campaign.user_id !== userID) {
         return res.status(401).send('Campaign not owned!');
       }
