@@ -8,6 +8,9 @@ export default {
     isLoggedIn() {
       return this.$store.state.token != null;
     },
+    campaigns() {
+      return this.$store.state.campaigns;
+    },
   },
   methods: {
     updateUsername(e) {
@@ -74,13 +77,46 @@ export default {
       }
       this.enableButtons();
     },
+    sayHi(ho) {
+      alert('Hi ' + ho);
+    },
+    async supportCampaign(id) {
+      const campaigns = this.campaigns;
+      this.$store.commit(
+        'updateCampaigns',
+        campaigns.map((c) => {
+          if (c.id !== id) {
+            return c;
+          }
+          return {
+            ...c,
+            processing: true,
+          };
+        })
+      );
+      await new Promise((r) => setTimeout(r, 1000));
+      this.$store.commit(
+        'updateCampaigns',
+        campaigns.map((c) => {
+          if (c.id !== id) {
+            return c;
+          }
+          return {
+            ...c,
+            votes: !c.supported ? c.votes + 1 : c.votes - 1,
+            supported: !c.supported,
+            processing: false,
+          };
+        })
+      );
+    },
   },
 };
 </script>
 
 <template>
   <div v-if="!this.isLoggedIn">
-    <h1>Login</h1>
+    <h1>Login / Register</h1>
     <form ref="form">
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
@@ -120,4 +156,43 @@ export default {
       </button>
     </form>
   </div>
+  <div v-else>
+    <h1 class="mb-4">Campaigns</h1>
+    <div class="container">
+      <div class="row">
+        <div
+          v-for="campaign in this.campaigns"
+          class="campaign col-12 col-md-6 col-lg-4"
+        >
+          <div class="mx-1 mb-2 px-3 py-4">
+            <h3>{{ campaign.title }}</h3>
+            <p>
+              {{ campaign.description }}
+            </p>
+            <div>Votes: {{ campaign.votes }}</div>
+            <div class="mt-2 w-100">
+              <button
+                @click="() => this.supportCampaign(campaign.id)"
+                :class="{
+                  'btn-outline-primary': !campaign.supported,
+                  'btn-primary': campaign.supported,
+                }"
+                class="btn col-12"
+                :disabled="campaign.processing"
+              >
+                Support
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.campaign > div {
+  border: 3px solid rgb(199, 199, 199);
+  border-radius: 5px;
+}
+</style>
