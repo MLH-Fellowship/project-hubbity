@@ -12,6 +12,16 @@ export default {
       return this.$store.state.campaigns;
     },
   },
+  async mounted() {
+    if (this.isLoggedIn) {
+      const { data } = await axios.get('/api/campaigns', {
+        headers: {
+          Authorization: `Bearer ${this.$store.state.token}`,
+        },
+      });
+      this.$store.commit('updateCampaigns', data);
+    }
+  },
   methods: {
     updateUsername(e) {
       this.$store.commit('updateUsername', e?.target?.value ?? e);
@@ -76,9 +86,6 @@ export default {
         e?.response?.data && alert(e.response.data);
       }
       this.enableButtons();
-    },
-    sayHi(ho) {
-      alert('Hi ' + ho);
     },
     async supportCampaign(id) {
       const campaigns = this.campaigns;
