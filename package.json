@@ -6,6 +6,7 @@
     "dev": "vite",
     "start": "cross-env NODE_ENV=production node ./server/run-server.js",
     "build": "vite build",
+    "migrate": "knex migrate:latest",
     "preview": "vite preview --port 4173",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
