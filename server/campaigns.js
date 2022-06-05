@@ -67,7 +67,7 @@ router.post('/:id', auth.middleware, async (req, res) => {
     })
     .onConflict()
     .ignore();
-  res.status(201).send('Voted succesfully!');
+  res.send('Voted succesfully!');
 });
 
 router.delete('/:id', auth.middleware, async (req, res) => {

@@ -19,7 +19,13 @@ export default {
           Authorization: `Bearer ${this.$store.state.token}`,
         },
       });
-      this.$store.commit('updateCampaigns', data);
+      this.$store.commit(
+        'updateCampaigns',
+        data.map((c) => ({
+          ...c,
+          processing: false,
+        }))
+      );
     }
   },
   methods: {
@@ -101,7 +107,28 @@ export default {
           };
         })
       );
-      await new Promise((r) => setTimeout(r, 1000));
+      const campaign = campaigns.find((c) => c.id === id);
+      if (campaign.supported) {
+        await axios.delete('/api/campaigns/' + id, {
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`,
+          },
+        });
+      } else {
+        await axios.post('/api/campaigns/' + id, undefined, {
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`,
+          },
+        });
+      }
+      const { data: updatedCampaign } = await axios.get(
+        '/api/campaigns/' + id,
+        {
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`,
+          },
+        }
+      );
       this.$store.commit(
         'updateCampaigns',
         campaigns.map((c) => {
@@ -109,9 +136,7 @@ export default {
             return c;
           }
           return {
-            ...c,
-            votes: !c.supported ? c.votes + 1 : c.votes - 1,
-            supported: !c.supported,
+            ...updatedCampaign,
             processing: false,
           };
         })
