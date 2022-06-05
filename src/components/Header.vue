@@ -2,6 +2,22 @@
 import { RouterLink } from 'vue-router';
 </script>
 
+<script>
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.state.token != null;
+    },
+  },
+  methods: {
+    logout(e) {
+      e.preventDefault();
+      this.$store.commit('removeToken');
+    },
+  },
+};
+</script>
+
 <template>
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -25,6 +41,9 @@ import { RouterLink } from 'vue-router';
             </li>
             <li class="nav-item">
               <RouterLink class="nav-link" to="/about">About</RouterLink>
+            </li>
+            <li v-if="isLoggedIn" class="nav-item">
+              <a @click="logout" class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>
         </div>
