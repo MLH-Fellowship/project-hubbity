@@ -37,5 +37,8 @@ export default {
       min: 2,
       max: 10,
     },
+    ...(process.env.DB_REJECT_UNAUTHORIZED && {
+      ssl: { rejectUnauthorized: false },
+    }),
   },
 };
