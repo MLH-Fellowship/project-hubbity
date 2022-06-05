@@ -57,7 +57,7 @@ router.get('/:id', auth.middleware, async (req, res) => {
   }
 });
 
-router.post('/:id', auth.middleware, async (req, res) => {
+router.post('/:id/vote', auth.middleware, async (req, res) => {
   const userID = req.auth.id;
   const id = +req.params.id;
   await db('campaigns_votes')
@@ -70,7 +70,7 @@ router.post('/:id', auth.middleware, async (req, res) => {
   res.send('Voted succesfully!');
 });
 
-router.delete('/:id', auth.middleware, async (req, res) => {
+router.delete('/:id/vote', auth.middleware, async (req, res) => {
   const userID = req.auth.id;
   const id = +req.params.id;
   await db('campaigns_votes').delete().where({

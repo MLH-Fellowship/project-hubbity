@@ -107,13 +107,13 @@ export default {
       );
       const campaign = campaigns.find((c) => c.id === id);
       if (campaign.supported) {
-        await axios.delete('/api/campaigns/' + id, {
+        await axios.delete('/api/campaigns/' + id + '/vote', {
           headers: {
             Authorization: `Bearer ${store.state.token}`,
           },
         });
       } else {
-        await axios.post('/api/campaigns/' + id, undefined, {
+        await axios.post('/api/campaigns/' + id + '/vote', undefined, {
           headers: {
             Authorization: `Bearer ${store.state.token}`,
           },
@@ -190,7 +190,9 @@ export default {
     <h1 class="mb-4">Campaigns</h1>
     <div class="container">
       <div class="row">
+        <div v-if="store.state.campaigns.length < 1">No campaigns to see.</div>
         <div
+          v-else
           v-for="campaign in store.state.campaigns"
           class="campaign col-12 col-md-6 col-lg-4"
         >
