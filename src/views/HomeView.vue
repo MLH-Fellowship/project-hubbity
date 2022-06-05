@@ -140,6 +140,38 @@ export default {
         })
       );
     },
+    async deleteCampaign(id) {
+      const campaigns = store.state.campaigns;
+      store.commit(
+        'updateCampaigns',
+        campaigns.map((c) => {
+          if (c.id !== id) {
+            return c;
+          }
+          return {
+            ...c,
+            processing: true,
+          };
+        })
+      );
+
+      try {
+        const { data: msg } = await axios.delete('/api/campaigns/' + id, {
+          headers: {
+            Authorization: `Bearer ${store.state.token}`,
+          },
+        });
+
+        alert(msg);
+        store.commit(
+          'updateCampaigns',
+          campaigns.filter((c) => c.id !== id)
+        );
+      } catch (e) {
+        console.error(e);
+        e?.response?.data && alert(e.response.data);
+      }
+    },
   },
 };
 </script>
@@ -210,11 +242,22 @@ export default {
                 :class="{
                   'btn-outline-primary': !campaign.supported,
                   'btn-primary': campaign.supported,
+                  'col-12': !campaign.owned,
+                  'col-9': campaign.owned,
                 }"
-                class="btn col-12"
+                class="btn"
                 :disabled="campaign.processing"
               >
+                {{ ' ' }}
                 Support
+              </button>
+              <button
+                @click="() => deleteCampaign(campaign.id)"
+                class="btn btn-danger offset-1 col-2"
+                v-if="campaign.owned"
+                :disabled="campaign.processing"
+              >
+                🗑️
               </button>
             </div>
           </div>
