@@ -11,7 +11,8 @@ const port = parseInt(process.env.PORT, 10) || 8080;
 
 const app = express();
 
-app.use('/api/*', api);
+app.use(express.json({ strict: true }));
+app.use('/api', api);
 
 app.use(express.static(path.resolve(__dirname, '../dist')));
 

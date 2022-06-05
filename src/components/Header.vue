@@ -1,14 +1,10 @@
 <script setup>
 import { RouterLink } from 'vue-router';
+import store from '../state';
 </script>
 
 <script>
 export default {
-  computed: {
-    isLoggedIn() {
-      return this.$store.state.token != null;
-    },
-  },
   methods: {
     logout(e) {
       e.preventDefault();
@@ -42,7 +38,7 @@ export default {
             <li class="nav-item">
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
-            <li v-if="isLoggedIn" class="nav-item">
+            <li v-if="store.state.token" class="nav-item">
               <a @click="logout" class="nav-link" href="/logout">Logout</a>
             </li>
           </ul>

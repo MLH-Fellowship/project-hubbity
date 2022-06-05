@@ -1,44 +1,42 @@
 <script setup>
 import axios from 'axios';
+import store from '../state';
 </script>
 
 <script>
 export default {
-  computed: {
-    isLoggedIn() {
-      return this.$store.state.token != null;
+  watch: {
+    '$store.state.token': {
+      immediate: true,
+      async handler() {
+        if (store.state.token) {
+          const { data } = await axios.get('/api/campaigns', {
+            headers: {
+              Authorization: `Bearer ${store.state.token}`,
+            },
+          });
+          store.commit(
+            'updateCampaigns',
+            data.map((c) => ({
+              ...c,
+              processing: false,
+            }))
+          );
+        }
+      },
     },
-    campaigns() {
-      return this.$store.state.campaigns;
-    },
-  },
-  async mounted() {
-    if (this.isLoggedIn) {
-      const { data } = await axios.get('/api/campaigns', {
-        headers: {
-          Authorization: `Bearer ${this.$store.state.token}`,
-        },
-      });
-      this.$store.commit(
-        'updateCampaigns',
-        data.map((c) => ({
-          ...c,
-          processing: false,
-        }))
-      );
-    }
   },
   methods: {
     updateUsername(e) {
-      this.$store.commit('updateUsername', e?.target?.value ?? e);
+      store.commit('updateUsername', e?.target?.value ?? e);
     },
     updatePassword(e) {
-      this.$store.commit('updatePassword', e?.target?.value ?? e);
+      store.commit('updatePassword', e?.target?.value ?? e);
     },
     getCredentials() {
       return {
-        email: this.$store.state.username,
-        password: this.$store.state.password,
+        email: store.state.username,
+        password: store.state.password,
       };
     },
     toggleButtons(state) {
@@ -65,7 +63,7 @@ export default {
           email,
           password,
         });
-        this.$store.commit('updateToken', token);
+        store.commit('updateToken', token);
       } catch (e) {
         console.error(e);
         e?.response?.data && alert(e.response.data);
@@ -94,8 +92,8 @@ export default {
       this.enableButtons();
     },
     async supportCampaign(id) {
-      const campaigns = this.campaigns;
-      this.$store.commit(
+      const campaigns = store.state.campaigns;
+      store.commit(
         'updateCampaigns',
         campaigns.map((c) => {
           if (c.id !== id) {
@@ -111,13 +109,13 @@ export default {
       if (campaign.supported) {
         await axios.delete('/api/campaigns/' + id, {
           headers: {
-            Authorization: `Bearer ${this.$store.state.token}`,
+            Authorization: `Bearer ${store.state.token}`,
           },
         });
       } else {
         await axios.post('/api/campaigns/' + id, undefined, {
           headers: {
-            Authorization: `Bearer ${this.$store.state.token}`,
+            Authorization: `Bearer ${store.state.token}`,
           },
         });
       }
@@ -125,11 +123,11 @@ export default {
         '/api/campaigns/' + id,
         {
           headers: {
-            Authorization: `Bearer ${this.$store.state.token}`,
+            Authorization: `Bearer ${store.state.token}`,
           },
         }
       );
-      this.$store.commit(
+      store.commit(
         'updateCampaigns',
         campaigns.map((c) => {
           if (c.id !== id) {
@@ -147,13 +145,13 @@ export default {
 </script>
 
 <template>
-  <div v-if="!this.isLoggedIn">
+  <div v-if="!store.state.token">
     <h1>Login / Register</h1>
     <form ref="form">
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
         <input
-          :value="this.$store.state.username"
+          :value="store.state.username"
           @input="updateUsername"
           type="email"
           class="form-control"
@@ -163,7 +161,7 @@ export default {
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <input
-          :value="this.$store.state.password"
+          :value="store.state.password"
           @input="updatePassword"
           type="password"
           class="form-control"
@@ -193,7 +191,7 @@ export default {
     <div class="container">
       <div class="row">
         <div
-          v-for="campaign in this.campaigns"
+          v-for="campaign in store.state.campaigns"
           class="campaign col-12 col-md-6 col-lg-4"
         >
           <div class="mx-1 mb-2 px-3 py-4">
@@ -204,7 +202,7 @@ export default {
             <div>Votes: {{ campaign.votes }}</div>
             <div class="mt-2 w-100">
               <button
-                @click="() => this.supportCampaign(campaign.id)"
+                @click="() => supportCampaign(campaign.id)"
                 :class="{
                   'btn-outline-primary': !campaign.supported,
                   'btn-primary': campaign.supported,

@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "start": "vite",
+    "start": "node ./server/run-server.js",
     "build": "vite build",
-    "serve": "node ./server/run-server.js",
     "preview": "vite preview --port 4173",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
