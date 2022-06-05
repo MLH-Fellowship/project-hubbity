@@ -156,6 +156,7 @@ export default {
           type="email"
           class="form-control"
           id="email"
+          required
         />
       </div>
       <div class="mb-3">
@@ -166,6 +167,7 @@ export default {
           type="password"
           class="form-control"
           id="password"
+          required
         />
       </div>
       <button
