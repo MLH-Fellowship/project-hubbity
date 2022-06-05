@@ -12,7 +12,44 @@ export default {
     updateDescription(e) {
       store.commit('updateDescription', e?.target?.value ?? e);
     },
-    async create() {},
+    toggleButton(state) {
+      this.$refs.createButton.disabled = !state;
+    },
+    enableButton() {
+      this.toggleButton(true);
+    },
+    disableButton() {
+      this.toggleButton(false);
+    },
+    async create() {
+      this.disableButton();
+      if (!this.$refs.form.checkValidity()) {
+        this.enableButton();
+        return this.$refs.form.reportValidity();
+      }
+
+      try {
+        const { data } = await axios.post(
+          '/api/campaigns',
+          {
+            title: store.state.title,
+            description: store.state.description,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${store.state.token}`,
+            },
+          }
+        );
+        alert(data);
+        this.updateTitle('');
+        this.updateDescription('');
+      } catch (e) {
+        console.error(e);
+        e?.response?.data && alert(e.response.data);
+      }
+      this.enableButton();
+    },
   },
 };
 </script>
@@ -29,6 +66,7 @@ export default {
           type="text"
           class="form-control"
           id="title"
+          required
         />
       </div>
       <div class="mb-3">
@@ -38,6 +76,7 @@ export default {
           @input="updateDescription"
           class="form-control"
           id="description"
+          required
         ></textarea>
       </div>
       <button
