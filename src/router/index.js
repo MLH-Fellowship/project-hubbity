@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
+import Logout from '../views/Logout.vue';
+import NotFound from '../views/404View.vue';
 
 const router = createRouter({
   linkExactActiveClass: 'active',
@@ -22,6 +24,15 @@ const router = createRouter({
       path: '/create',
       name: 'create',
       component: () => import('../views/CreateView.vue'),
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      component: Logout,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      component: NotFound,
     },
   ],
 });

@@ -3,17 +3,6 @@ import { RouterLink } from 'vue-router';
 import store from '../state';
 </script>
 
-<script>
-export default {
-  methods: {
-    logout(e) {
-      e.preventDefault();
-      this.$store.commit('removeToken');
-    },
-  },
-};
-</script>
-
 <template>
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -42,7 +31,7 @@ export default {
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
             <li v-if="store.state.token" class="nav-item">
-              <a @click="logout" class="nav-link" href="/logout">Logout</a>
+              <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
             </li>
           </ul>
         </div>

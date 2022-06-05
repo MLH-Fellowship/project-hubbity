@@ -28,7 +28,7 @@ export default {
 
   production: {
     ...baseConfig,
-    connection: {
+    connection: process.env.DATABASE_URL || {
       database: 'hubbity_prod',
       user: process.env.DB_USERNAME || 'admin',
       password: process.env.DB_PASSWORD || 'admin',

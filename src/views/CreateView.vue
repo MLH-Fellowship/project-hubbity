@@ -1,10 +1,21 @@
 <script setup>
 import axios from 'axios';
+import router from '../router';
 import store from '../state';
 </script>
 
 <script>
 export default {
+  watch: {
+    '$store.state.token': {
+      immediate: true,
+      async handler() {
+        if (!store.state.token) {
+          router.replace('/');
+        }
+      },
+    },
+  },
   methods: {
     updateTitle(e) {
       store.commit('updateTitle', e?.target?.value ?? e);
