@@ -4,6 +4,7 @@ import * as username from './username';
 import * as password from './password';
 import * as token from './token';
 import * as campaigns from './campaigns';
+import newCampaign from './new-campaign';
 
 const store = createStore({
   state() {
@@ -12,6 +13,8 @@ const store = createStore({
       password: password.initialValue,
       token: token.initialValue,
       campaigns: campaigns.initialValue,
+      title: newCampaign.initialValue.title,
+      description: newCampaign.initialValue.description,
     };
   },
   mutations: {
@@ -19,6 +22,7 @@ const store = createStore({
     ...password.mutations,
     ...token.mutations,
     ...campaigns.mutations,
+    ...newCampaign.mutations,
   },
 });
 

@@ -35,6 +35,9 @@ export default {
             <li class="nav-item">
               <RouterLink class="nav-link" to="/">Home</RouterLink>
             </li>
+            <li v-if="store.state.token" class="nav-item">
+              <RouterLink class="nav-link" to="/create">Create</RouterLink>
+            </li>
             <li class="nav-item">
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
