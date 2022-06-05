@@ -1,9 +1,12 @@
 import crypto from 'crypto-js';
 import jwt from 'jsonwebtoken';
+import { expressjwt } from 'express-jwt';
 
 import db from './db';
 
 const SECRET = process.env.SECRET || 'sacredsecret';
+
+export const middleware = expressjwt({ secret: SECRET, algorithms: ['HS256'] });
 
 export const login = async (req, res) => {
   try {
